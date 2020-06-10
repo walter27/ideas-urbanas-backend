@@ -1,10 +1,10 @@
 const express = require('express');
 const app = express();
-const port = 3000;
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const compression = require('compression');
 
+require('./config/config')
 
 //Auth
 const auth = require('./routes/auth');
@@ -33,10 +33,10 @@ const reports = require('./routes/reports');
 const csvFile = require('./routes/fileCSV');
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost:27017/idesdb', { useNewUrlParser: true })
+mongoose.connect(process.env.URLDB, { useNewUrlParser: true })
     .then(() => {
         console.log('Conexion a la base de datos realizada');
-        app.listen(port, () => console.log(`The server is running ${port}!`))
+        app.listen(process.env.PORT, () => console.log(`The server is running ${process.env.PORT}!`))
     })
     .catch((err) => {
         console.log(err);

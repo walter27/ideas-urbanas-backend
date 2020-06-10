@@ -16,15 +16,20 @@ function getCantons(req, res) {
 
     const filters = filtersH.buildFilters(req);
 
-    var extraFilters = { };
+    console.log(filters);
 
-    if ( req.body.search != null ) {
+
+    var extraFilters = {};
+
+    if (req.body.search != null) {
         extraFilters = { $and: [] };
-        extraFilters.$and.push({ $or: [ 
-            { 'code': { $regex: '.*' + req.body.search + '.*' } },
-            { 'name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } },
-            { 'obj_Provincia.name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } }
-        ]}); 
+        extraFilters.$and.push({
+            $or: [
+                { 'code': { $regex: '.*' + req.body.search + '.*' } },
+                { 'name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } },
+                { 'obj_Provincia.name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } }
+            ]
+        });
     }
 
     if (req.params.id) {
@@ -58,25 +63,25 @@ function addCanton(req, res) {
         if (body.name && body.code && ObjectId.isValid(body.id_Provincia)) {
 
             ProvinciaModel.findById({ _id: ObjectId(body.id_Provincia) }, (err, provincia) => {
-                if (err) 
+                if (err)
                     return responsesH.sendError(res, 400, 'Provincia no encontrada.');
                 const canton = new CantonModel({
-                        name: body.name || '',
-                        description: body.description || '',
-                        code: body.code || '',
-                        obj_Provincia: provincia,
-                        active: body.active,
-                        url: body.url,
-                        color: body.color || ''
+                    name: body.name || '',
+                    description: body.description || '',
+                    code: body.code || '',
+                    obj_Provincia: provincia,
+                    active: body.active,
+                    url: body.url,
+                    color: body.color || ''
                 });
 
                 canton.save((err, value) => {
-                        if (err) {
-                            return responsesH.sendError(res, 500, messageError);
-                        }
-        
-                        return responsesH.sendResponseOk(res, value, 'Canton insertado correctamente.');
-                });    
+                    if (err) {
+                        return responsesH.sendError(res, 500, messageError);
+                    }
+
+                    return responsesH.sendResponseOk(res, value, 'Canton insertado correctamente.');
+                });
             });
         } else {
             return responsesH.sendError(res, 500, messageErrorBody);
@@ -97,11 +102,11 @@ async function updateCanton(req, res) {
         const { error } = updateValidation(req.body);
         if (error)
             return responsesH.sendError(res, 400, messageErrorBody);
-         
-        console.log("Body: ",body);
-            
+
+        console.log("Body: ", body);
+
         //Search canton to update and update
-        CantonModel.findById(_id, async (err, canton) => {
+        CantonModel.findById(_id, async(err, canton) => {
             console.log("canton: ", canton)
             if (err) {
                 return responsesH.sendError(res, 500, 'Canton no encontrado.');
@@ -114,11 +119,11 @@ async function updateCanton(req, res) {
             if (body.url) canton.url = body.url;
             if (body.color) canton.color = body.color;
 
-            if ( ObjectId.isValid( body.id_Provincia ) ) {
-                const provincia = await ProvinciaModel.findOne({_id: body.id_Provincia});
+            if (ObjectId.isValid(body.id_Provincia)) {
+                const provincia = await ProvinciaModel.findOne({ _id: body.id_Provincia });
                 if (provincia == null)
                     return responsesH.sendError(res, 400, 'Provincia no encontrada.');
-                canton.obj_Provincia = provincia ;
+                canton.obj_Provincia = provincia;
             } else {
                 return responsesH.sendError(res, 400, 'Provincia incorrecta.');
             }

@@ -75,7 +75,8 @@ function addData(req, res) {
                         year: body.year,
                         obj_Variable: variable,
                         obj_Canton: canton,
-                        active: true
+                        active: true,
+                        date: body.date
                     });
 
                     data.save((err, value) => {
@@ -118,6 +119,8 @@ async function updateData(req, res) {
             if (body.value) data.value = body.value;
             if (body.description) data.description = body.description;
             if (body.year) data.year = body.year;
+            if (body.date) data.date = body.date;
+
 
             if (ObjectId.isValid(body.id_Variable)) {
                 const variable = await VariableModel.findOne({ _id: body.id_Variable });

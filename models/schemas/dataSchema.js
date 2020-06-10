@@ -7,6 +7,7 @@ var dataSchema = new mongoose.Schema({
     year: { type: Number, required: true },
     obj_Canton: { type: Object, required: true },
     obj_Variable: { type: Object, required: true },
+    date: { type: Date },
     active: Boolean
 });
 
