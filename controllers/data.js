@@ -56,9 +56,12 @@ function addData(req, res) {
 
         //validate form with @hapi/joi
         const { error } = addValidation(body);
-        if (error)
-            return responsesH.sendError(res, 400, messageErrorBody);
+        if (error) {
 
+            console.log('error 1', error);
+
+            return responsesH.sendError(res, 400, messageErrorBody);
+        }
         if (ObjectId.isValid(body.id_Variable) && ObjectId.isValid(body.id_Canton)) {
 
             VariableModel.findById({ _id: ObjectId(body.id_Variable) }, (err, variable) => {

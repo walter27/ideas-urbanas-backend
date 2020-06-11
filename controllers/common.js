@@ -56,7 +56,15 @@ function getDatas(req, res) {
         };
     }
 
+    console.log(extra_filters);
+    let data = DataModel.paginate(extra_filters, filters);
+    console.log(data);
+
+
+
     return DataModel.paginate(extra_filters, filters);
+
+
 }
 
 

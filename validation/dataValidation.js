@@ -1,13 +1,14 @@
 const Joi = require('@hapi/joi');
 
 const addValidation = data => {
-    
+
     const schema = {
         value: Joi.number(),
         description: Joi.optional(),
         year: Joi.number(),
         id_Variable: Joi.string().required(),
-        id_Canton: Joi.string().required()
+        id_Canton: Joi.string().required(),
+        date: Joi.date()
     };
 
     return Joi.validate(data, schema);
@@ -15,13 +16,15 @@ const addValidation = data => {
 
 
 const updateValidation = data => {
-    
+
     const schema = {
         value: Joi.number(),
         description: Joi.optional(),
         year: Joi.number(),
         id_Variable: Joi.string().required(),
-        id_Canton: Joi.string().required()
+        id_Canton: Joi.string().required(),
+        date: Joi.date()
+
     };
 
     return Joi.validate(data, schema);
