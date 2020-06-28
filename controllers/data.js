@@ -52,14 +52,13 @@ function getDatas(req, res) {
 
 function addData(req, res) {
     const body = req.body;
+
     if (body) {
+        // console.log('perro2', body);
 
         //validate form with @hapi/joi
         const { error } = addValidation(body);
         if (error) {
-
-            console.log('error 1', error);
-
             return responsesH.sendError(res, 400, messageErrorBody);
         }
         if (ObjectId.isValid(body.id_Variable) && ObjectId.isValid(body.id_Canton)) {

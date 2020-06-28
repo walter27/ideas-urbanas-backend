@@ -13,7 +13,7 @@ app.get('/datos/:data', (req, res) => {
     console.log(data);
 
 
-    let pathCSV = path.resolve(__dirname, `../files/${data}.csv`)
+    let pathCSV = path.resolve(__dirname, `../files/${data}.json`)
 
     console.log(pathCSV);
 

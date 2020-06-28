@@ -66,7 +66,7 @@ app.use('/research', verifyAdmin, research);
 app.use('/clasification', verifyAdmin, clasification);
 app.use('/origin', verifyAdmin, origin);
 app.use('/variable', verifyAdmin, variable);
-app.use('/data', verifyAdmin, data);
+app.use('/data', data);
 app.use('/tag', verifyAdmin, tag);
 app.use('/indicator', verifyAdmin, indicator);
 
