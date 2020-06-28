@@ -83,7 +83,7 @@ function addData(req, res) {
 
                     data.save((err, value) => {
                         if (err) {
-                            return responsesH.sendError(res, 500, messageError);
+                            return responsesH.sendError(res, 500, messageError, err);
                         }
 
                         return responsesH.sendResponseOk(res, value, 'Dato insertado correctamente.');
