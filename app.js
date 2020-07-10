@@ -61,7 +61,7 @@ app.use('/user', verifyAdmin, user);
 app.use('/config', verifyAdmin, config);
 app.use('/server', verifyAdmin, server);
 app.use('/provincia', verifyAdmin, provincia);
-app.use('/canton', verifyAdmin, canton);
+app.use('/canton', canton);
 app.use('/research', verifyAdmin, research);
 app.use('/clasification', verifyAdmin, clasification);
 app.use('/origin', verifyAdmin, origin);

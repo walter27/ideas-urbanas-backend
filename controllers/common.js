@@ -31,11 +31,14 @@ async function user_logued(req, res) { //Usuario logueado
 
 function getDatas(req, res) {
 
+    console.log(req.body);
+
+
     const filters = filtersH.buildFilters(req);
 
     filters.sort = filters.sort + ' and year';
 
-    var extra_filters = { 'obj_Canton.active': true };
+    var extra_filters = {};
     if (req.body.id_Variable) {
         extra_filters['obj_Variable._id'] = ObjectId(req.body.id_Variable);
     }
