@@ -31,14 +31,11 @@ async function user_logued(req, res) { //Usuario logueado
 
 function getDatas(req, res) {
 
-    console.log(req.body);
-
-
     const filters = filtersH.buildFilters(req);
 
     filters.sort = filters.sort + ' and year';
 
-    var extra_filters = {};
+    var extra_filters = { 'obj_Canton.active': true };
     if (req.body.id_Variable) {
         extra_filters['obj_Variable._id'] = ObjectId(req.body.id_Variable);
     }
@@ -51,6 +48,7 @@ function getDatas(req, res) {
             cities.push(ObjectId(req.body.cities[i]));
         }
 
+        console.log("CIUDADES", cities);
         extra_filters = {
             $and: [
                 extra_filters,
@@ -59,9 +57,9 @@ function getDatas(req, res) {
         };
     }
 
-    /*console.log(extra_filters);
-    let data = DataModel.paginate(extra_filters, filters);
-    console.log(data);*/
+    console.log("EXTRA", extra_filters);
+    /* let data = DataModel.paginate(extra_filters, filters);
+     console.log(data);*/
 
 
 
@@ -70,10 +68,30 @@ function getDatas(req, res) {
 
 }
 
+function getDatasCovid(req, res) {
+
+    const filters = filtersH.buildFilters(req);
+
+    var extraFilters = {};
+
+    if (req.body.search != null) {
+        extraFilters = { $and: [] };
+        extraFilters.$and.push({
+            $or: [
+                { 'date': `${req.body.search}` },
+            ]
+        });
+    }
+
+    return DataModel.paginate(extraFilters, filters)
+
+}
+
 
 
 module.exports = {
     user_logued,
     getDatas,
+    getDatasCovid
 
 }

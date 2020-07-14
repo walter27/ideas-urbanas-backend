@@ -26,6 +26,7 @@ var ObjectId = require('mongoose').Types.ObjectId;
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const clasification = require('./clasification');
 
 function getClasifications(req, res) {
 
@@ -195,6 +196,12 @@ async function getDatas(req, res) {
 async function getDatasCSV(req, res) {
 
     return responsesH.sendResponseCSV(res, await commonController.getDatas(req, res));
+}
+
+async function getDataCovid(req, res) {
+
+    return responsesH.sendResponseOk(res, await commonController.getDatasCovid(req, res))
+
 }
 
 async function exportDatas(req, res) {
@@ -490,6 +497,8 @@ async function getIndexes(req, res) {
 
     const clasifications = await ClasificationModel.find({});
 
+    let clasificationsFinal = clasifications.filter(calsification => calsification.name !== "Corona Virus");
+
     var cities = null;
     if (req.body.cities)
         cities = await CantonModel.find({ _id: { $in: req.body.cities }, active: true });
@@ -520,10 +529,10 @@ async function getIndexes(req, res) {
 
 
 
-    for (let k = 0; k < clasifications.length; k++) {
+    for (let k = 0; k < clasificationsFinal.length; k++) {
 
         //Calcular el índice para cada clasification y cada ciudad//
-        let index_name = clasifications[k].name.toLowerCase().replace(/ /g, '_')
+        let index_name = clasificationsFinal[k].name.toLowerCase().replace(/ /g, '_')
             .replace(/á/g, "a")
             .replace(/é/g, "e")
             .replace(/í/g, "i")
@@ -585,5 +594,6 @@ module.exports = {
     getIndicators,
     addTag,
     getStopwords,
-    getDatasCSV
+    getDatasCSV,
+    getDataCovid
 }

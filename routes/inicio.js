@@ -20,6 +20,7 @@ router.post('/getVariableByClasification', inicioController.getVariableByClasifi
 router.post('/getResearchsByCatAndCant', inicioController.getResearchsByCatAndCant);
 router.post('/data', inicioController.getDatas);
 router.post('/csv', inicioController.getDatasCSV);
+router.post('/covid', inicioController.getDataCovid);
 router.post('/indexes', inicioController.getIndexes);
 router.post('/exportdata', inicioController.exportDatas);
 router.post('/getTagsByCantByType', inicioController.getTagsByCantByType);

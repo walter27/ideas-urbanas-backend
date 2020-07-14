@@ -27,6 +27,7 @@ function getDatas(req, res) {
                 { 'obj_Canton.obj_Provincia.name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } },
                 { 'obj_Variable.name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } },
                 { 'obj_Variable.obj_Clasification.name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } },
+                //{ 'date': `${req.body.search}` },
                 { 'obj_Variable.origins.name': { $all: [req.body.search] } }
             ]
         });
@@ -41,6 +42,8 @@ function getDatas(req, res) {
             return responsesH.sendResponseOk(res, value);
         });
     } else {
+
+        //console.log('EXTRA', extraFilters.$and[0]);
         DataModel.paginate(extraFilters, filters, (err, value) => {
             if (err) {
                 return responsesH.sendError(res, 500, messageError);
@@ -54,8 +57,6 @@ function addData(req, res) {
     const body = req.body;
 
     if (body) {
-        // console.log('perro2', body);
-
         //validate form with @hapi/joi
         const { error } = addValidation(body);
         if (error) {
