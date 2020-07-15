@@ -1,14 +1,15 @@
 const Joi = require('@hapi/joi');
 
 const addValidation = data => {
-    
+
     const schema = {
         name: Joi.string().min(3).required(),
         description: Joi.optional(),
         code: Joi.string().regex(/^\d+$/).required(),
         active: Joi.boolean().required(),
+        covid: Joi.boolean(),
         id_Provincia: Joi.string().required(),
-        url: Joi.string().required(),
+        url: Joi.string(),
         color: Joi.optional()
     };
 
@@ -17,14 +18,15 @@ const addValidation = data => {
 
 
 const updateValidation = data => {
-    
+
     const schema = {
         name: Joi.string().min(3).required(),
         description: Joi.optional(),
         code: Joi.string().regex(/^\d+$/).required(),
-        active: Joi.boolean().required(),
+        active: Joi.boolean(),
+        covid: Joi.boolean(),
         id_Provincia: Joi.string().required(),
-        url: Joi.string().required(),
+        url: Joi.string(),
         color: Joi.optional()
     };
 

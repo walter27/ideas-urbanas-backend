@@ -56,7 +56,6 @@ function addCanton(req, res) {
         //validate form with @hapi/joi
         const { error } = addValidation(body);
         if (error) {
-            console.log(error);
             return responsesH.sendError(res, 400, messageErrorBody);
         }
 
@@ -65,16 +64,17 @@ function addCanton(req, res) {
             ProvinciaModel.findById({ _id: ObjectId(body.id_Provincia) }, (err, provincia) => {
                 if (err)
                     return responsesH.sendError(res, 400, 'Provincia no encontrada.');
+
                 const canton = new CantonModel({
                     name: body.name || '',
                     description: body.description || '',
                     code: body.code || '',
                     obj_Provincia: provincia,
                     active: body.active,
+                    covid: false,
                     url: body.url,
                     color: body.color || ''
                 });
-
                 canton.save((err, value) => {
                     if (err) {
                         return responsesH.sendError(res, 500, messageError);
@@ -96,26 +96,29 @@ async function updateCanton(req, res) {
     const body = req.body;
     const _id = req.params.id;
 
-    if (body && ObjectId.isValid(_id)) {
+    console.log("body", body);
 
+    if (body && ObjectId.isValid(_id)) {
         //validate form with @hapi/joi
         const { error } = updateValidation(req.body);
         if (error)
+        //console.log(error);
+
             return responsesH.sendError(res, 400, messageErrorBody);
-
-        console.log("Body: ", body);
-
         //Search canton to update and update
         CantonModel.findById(_id, async(err, canton) => {
-            console.log("canton: ", canton)
+            //console.log("canton: ", canton)
             if (err) {
                 return responsesH.sendError(res, 500, 'Canton no encontrado.');
             }
             //Update canton
+            console.log('ECONTRADO', canton.covid);
+
             if (body.name) canton.name = body.name;
             if (body.description) canton.description = body.description;
             if (body.code) canton.code = body.code;
             canton.active = body.active;
+            canton.covid = body.covid;
             if (body.url) canton.url = body.url;
             if (body.color) canton.color = body.color;
 

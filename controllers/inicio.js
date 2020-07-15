@@ -193,16 +193,17 @@ async function getDatas(req, res) {
     return responsesH.sendResponseOk(res, await commonController.getDatas(req, res));
 }
 
+async function getDatasCovid(req, res) {
+
+    return responsesH.sendResponseOk(res, await commonController.getDatasCovid(req, res));
+
+}
+
 async function getDatasCSV(req, res) {
 
     return responsesH.sendResponseCSV(res, await commonController.getDatas(req, res));
 }
 
-async function getDataCovid(req, res) {
-
-    return responsesH.sendResponseOk(res, await commonController.getDatasCovid(req, res))
-
-}
 
 async function exportDatas(req, res) {
 
@@ -595,5 +596,5 @@ module.exports = {
     addTag,
     getStopwords,
     getDatasCSV,
-    getDataCovid
+    getDatasCovid
 }
