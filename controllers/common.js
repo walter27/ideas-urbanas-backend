@@ -73,7 +73,6 @@ function getDatasCovid(req, res) {
         extra_filters['obj_Variable._id'] = ObjectId(req.body.idVariable);
     }
 
-    console.log("COVID", extra_filters);
     return DataModel.paginate(extra_filters, filters);
 
 

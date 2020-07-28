@@ -16,9 +16,6 @@ function getCantons(req, res) {
 
     const filters = filtersH.buildFilters(req);
 
-    console.log(filters);
-
-
     var extraFilters = {};
 
     if (req.body.search != null) {
@@ -96,8 +93,6 @@ async function updateCanton(req, res) {
     const body = req.body;
     const _id = req.params.id;
 
-    console.log("body", body);
-
     if (body && ObjectId.isValid(_id)) {
         //validate form with @hapi/joi
         const { error } = updateValidation(req.body);
@@ -112,7 +107,6 @@ async function updateCanton(req, res) {
                 return responsesH.sendError(res, 500, 'Canton no encontrado.');
             }
             //Update canton
-            console.log('ECONTRADO', canton.covid);
 
             if (body.name) canton.name = body.name;
             if (body.description) canton.description = body.description;
