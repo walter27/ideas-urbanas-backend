@@ -1,6 +1,8 @@
 const TagModel = require('../models/tag');
 const CantonModel = require('../models/canton');
 const StopwordModel = require('../models/stopwords');
+const Analyzer = require('natural').SentimentAnalyzer;
+const stemmer = require('natural').PorterStemmerEs
 var mongoose = require('mongoose');
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -14,12 +16,33 @@ const messageErrorBody = 'No ha enviado algún dato'
 const messageErrorParams = 'No ha enviado los parámetros'
 
 async function addTag(req, res) {
-    var data = { text: null, id_Canton: null, type: null };
+    let data = { text: null, id_Canton: null, type: null };
     if (req.body) {
         data.text = req.body.text;
         data.id_Canton = req.body.id_Canton;
-        data.type = req.body.type;
+        //data.type = req.body.type;
+
+        const analyzer = new Analyzer('Spanish', stemmer, 'senticon');
+        let value = analyzer.getSentiment([data.text]);
+        if (value > 0) {
+            data.type = 'positive'
+
+        }
+
+        if (value === 0) {
+            data.type = 'neutro'
+
+        }
+
+        if (value < 0) {
+
+            data.type = 'negative'
+
+
+        }
+
     }
+
 
     if (req.body && ObjectId.isValid(data.id_Canton)) {
 
@@ -145,8 +168,6 @@ function getTagsByCantByType(req, res) {
 
     const id_Canton = req.body.id_Canton;
     const type = req.body.type || 'all'
-
-    console.log('ANTESd', type);
 
     if (ObjectId.isValid(id_Canton)) {
         var search = { 'obj_Canton._id': ObjectId(id_Canton) };
