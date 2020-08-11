@@ -66,7 +66,7 @@ function getImageShare(req, res) {
 
 function saveImage24(req, res) {
 
-    let pathImage = path.resolve(__dirname, `../chart/`)
+    let pathImage = path.resolve(__dirname, `../${req.body.type}/`)
 
     //console.log(req.body);
     base64Img.img(req.body.data, pathImage, "image", (err) => {
