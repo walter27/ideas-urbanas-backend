@@ -41,11 +41,8 @@ function saveCharts(req, res) {
 function shareChart(req, res) {
 
     let share = `${req.body.name}_${new Date().getMilliseconds()}`;
-
     let pathImage = path.resolve(__dirname, `../${req.body.type}/image.png`)
     let pathImageShare = path.resolve(__dirname, `../share/${share}.png`);
-
-
     fs.copyFileSync(pathImage, pathImageShare);
 
     res.json({
