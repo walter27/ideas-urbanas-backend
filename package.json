@@ -12,6 +12,7 @@
   "dependencies": {
     "@hapi/joi": "^15.1.1",
     "archiver": "^3.1.1",
+    "base64-img": "^1.0.4",
     "bcrypt": "^3.0.6",
     "compression": "^1.7.4",
     "convert-csv-to-array": "^1.0.3",
@@ -28,6 +29,7 @@
     "express-formidable": "^1.2.0",
     "express-validator": "^6.1.1",
     "fast-csv": "^3.4.0",
+    "highcharts-export-server": "^2.0.28",
     "json2csv": "^4.5.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.18",

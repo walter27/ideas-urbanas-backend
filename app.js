@@ -3,6 +3,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const compression = require('compression');
+const path = require('path');
+
 
 require('./config/config')
 
@@ -45,7 +47,7 @@ mongoose.connect(process.env.URLDB, { useNewUrlParser: true })
 
 // cargar middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 
 const { verifyAdmin } = require('./verifyToken');
