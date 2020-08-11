@@ -32,7 +32,8 @@ function saveCharts(req, res) {
 
     res.json({
         ok: true,
-        img: 'Saved image!'
+        img: 'Saved image!',
+        route: pathImage
     })
 
 }
