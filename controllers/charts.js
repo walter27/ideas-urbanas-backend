@@ -6,9 +6,6 @@ const base64Img = require('base64-img');
 
 chartExporter.initPool();
 
-
-
-
 function getChartsTypes(req, res) {
 
     return res.status(200).send({
