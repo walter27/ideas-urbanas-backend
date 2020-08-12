@@ -20,8 +20,6 @@ function saveCharts(req, res) {
 
     let pathImage = path.resolve(__dirname, `../${req.body.options.chart.type }/image.png`)
     chartExporter.export(req.body, (error, res) => {
-
-        console.log('IMAGEBASE64', res.data);
         if (res.data) {
             let imageb64 = res.data;
             fs.writeFileSync(pathImage, imageb64, "base64", function(err) {
