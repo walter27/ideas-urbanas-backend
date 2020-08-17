@@ -15,6 +15,7 @@ router.get('/provincia/:id?', inicioController.getProvincias);
 router.get('/canton/:id?', inicioController.getCantons);
 router.get('/origin/:id?', inicioController.getOrigins);
 router.get('/indicator/:id?', inicioController.getIndicators);
+router.get('/years', inicioController.getYears);
 
 router.post('/getVariableByClasification', inicioController.getVariableByClasification);
 router.post('/getResearchsByCatAndCant', inicioController.getResearchsByCatAndCant);

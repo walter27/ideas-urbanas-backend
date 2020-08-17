@@ -69,6 +69,7 @@ function addCanton(req, res) {
                     obj_Provincia: provincia,
                     active: body.active,
                     covid: false,
+                    indexes: false,
                     url: body.url,
                     color: body.color || ''
                 });
@@ -113,6 +114,7 @@ async function updateCanton(req, res) {
             if (body.code) canton.code = body.code;
             canton.active = body.active;
             canton.covid = body.covid;
+            canton.indexes = body.indexes;
             if (body.url) canton.url = body.url;
             if (body.color) canton.color = body.color;
 

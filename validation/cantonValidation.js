@@ -8,6 +8,7 @@ const addValidation = data => {
         code: Joi.string().regex(/^\d+$/).required(),
         active: Joi.boolean().required(),
         covid: Joi.boolean(),
+        indexes: Joi.boolean(),
         id_Provincia: Joi.string().required(),
         url: Joi.string(),
         color: Joi.optional()
@@ -25,6 +26,7 @@ const updateValidation = data => {
         code: Joi.string().regex(/^\d+$/).required(),
         active: Joi.boolean(),
         covid: Joi.boolean(),
+        indexes: Joi.boolean(),
         id_Provincia: Joi.string().required(),
         url: Joi.string(),
         color: Joi.optional()

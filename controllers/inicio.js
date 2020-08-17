@@ -494,18 +494,18 @@ async function loadJSON(req, res) {
 
 async function getIndexes(req, res) {
 
+
     var indexes = {};
 
     const clasifications = await ClasificationModel.find({});
 
     let clasificationsFinal = clasifications.filter(calsification => calsification.name !== "Corona Virus");
-
     var cities = null;
-    if (req.body.cities)
-        cities = await CantonModel.find({ _id: { $in: req.body.cities }, active: true });
-    else
-        cities = await CantonModel.find({ active: true });
-
+    if (req.body.cities) {
+        cities = await CantonModel.find({ _id: { $in: req.body.cities }, indexes: true });
+    } else {
+        cities = await CantonModel.find({ indexes: true });
+    }
     var id_cities = [];
     cities.forEach(async city => {
         indexes[city.name] = {};
@@ -513,23 +513,19 @@ async function getIndexes(req, res) {
     });
 
     var years = [];
-    if (req.body.years)
+    if (req.body.years) {
+        console.log('existe año');
         years = req.body.years;
-    else {
+    } else {
         let min_year = await DataModel.findOne({
             'obj_Canton._id': { $in: id_cities },
-            'obj_Canton.active': true
         }).sort('year');
         let max_year = await DataModel.findOne({
             'obj_Canton._id': { $in: id_cities },
-            'obj_Canton.active': true
         }).sort('-year');
         for (let i = min_year.year; i <= max_year.year; i++)
             years.push(i);
     }
-
-
-
     for (let k = 0; k < clasificationsFinal.length; k++) {
 
         //Calcular el índice para cada clasification y cada ciudad//
@@ -541,37 +537,66 @@ async function getIndexes(req, res) {
             .replace(/ú/g, "u")
             .replace(/ñ/g, "n");
 
+
         for (let j = 0; j < cities.length; j++) {
 
-            indexes[cities[j].name][clasifications[k].name] = await eval('indicesController.' + index_name + '(cities[j],years)');
+            indexes[cities[j].name][clasificationsFinal[k].name] = await eval('indicesController.' + index_name + '(cities[j],years)');
         }
+
+
 
         ////////////////Fin del calculo/////////////////
 
     }
 
+    // console.log('ANTES', indexes);
+    //console.log('años', years);
     //var max_value = years.length*3;
     //Normalizando Resultados de los Índices.
-    for (let k = 0; k < clasifications.length; k++) {
+    for (let k = 0; k < clasificationsFinal.length; k++) {
         var max_value = 0;
-
-        var indicators = await IndicatorModel.find({ 'obj_Clasification._id': clasifications[k]._id });
+        var indicators = await IndicatorModel.find({ 'obj_Clasification._id': clasificationsFinal[k]._id });
         indicators.forEach(element => {
             max_value += Math.max(element.configs[0][1], element.configs[1][1], element.configs[2]);
         });
-
         max_value = max_value * years.length;
 
         if (max_value == 0) continue;
 
         for (let j = 0; j < cities.length; j++) {
-            indexes[cities[j].name][clasifications[k].name] = Math.round((indexes[cities[j].name][clasifications[k].name] / max_value) * 100);
+
+            indexes[cities[j].name][clasificationsFinal[k].name] = Math.round((indexes[cities[j].name][clasificationsFinal[k].name] / max_value) * 100);
         }
 
     }
 
     return responsesH.sendResponseOk(res, indexes, 'Índices obtenidos correctamente.');
 }
+
+
+async function getYears(req, res) {
+
+    var years = [];
+
+    let max_year = await DataModel.findOne().sort('-year');
+    let min_year = await DataModel.findOne().sort('year');
+
+    for (let i = min_year.year; i <= max_year.year; i++) {
+        years.push(i);
+
+
+    }
+    years = {
+        years
+    }
+
+    return responsesH.sendResponseOk(res, years, 'Years all data');
+
+
+    /*for (let i = min_year.year; i <= max_year.year; i++)
+        years.push(i);*/
+}
+
 
 module.exports = {
     inicio,
@@ -596,5 +621,6 @@ module.exports = {
     addTag,
     getStopwords,
     getDatasCSV,
-    getDatasCovid
+    getDatasCovid,
+    getYears
 }

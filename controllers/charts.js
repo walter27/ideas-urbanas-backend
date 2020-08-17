@@ -46,7 +46,6 @@ function shareChart(req, res) {
         img: share
     })
 
-
 }
 
 

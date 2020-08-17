@@ -12,6 +12,7 @@ var cantonSchema = new mongoose.Schema({
     obj_Provincia: { type: Object, required: true },
     active: Boolean,
     covid: Boolean,
+    indexes: Boolean,
     extraData: Object,
     color: { type: String }
 });
