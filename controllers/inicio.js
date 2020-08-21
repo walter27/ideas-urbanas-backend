@@ -514,7 +514,6 @@ async function getIndexes(req, res) {
 
     var years = [];
     if (req.body.years) {
-        console.log('existe año');
         years = req.body.years;
     } else {
         let min_year = await DataModel.findOne({
@@ -549,7 +548,7 @@ async function getIndexes(req, res) {
 
     }
 
-    // console.log('ANTES', indexes);
+    //console.log('ANTES', indexes);
     //console.log('años', years);
     //var max_value = years.length*3;
     //Normalizando Resultados de los Índices.
@@ -560,15 +559,16 @@ async function getIndexes(req, res) {
             max_value += Math.max(element.configs[0][1], element.configs[1][1], element.configs[2]);
         });
         max_value = max_value * years.length;
-
         if (max_value == 0) continue;
 
         for (let j = 0; j < cities.length; j++) {
 
-            indexes[cities[j].name][clasificationsFinal[k].name] = Math.round((indexes[cities[j].name][clasificationsFinal[k].name] / max_value) * 100);
+            indexes[cities[j].name][clasificationsFinal[k].name].value = Math.round((indexes[cities[j].name][clasificationsFinal[k].name].value / max_value) * 100);
         }
 
     }
+    //console.log('FINAL', indexes);
+
 
     return responsesH.sendResponseOk(res, indexes, 'Índices obtenidos correctamente.');
 }
