@@ -8,6 +8,7 @@ router.get('/', inicioController.inicio);
 router.get('/images/:id', inicioController.images);
 router.get('/logo/:id', inicioController.logo);
 router.get('/clasification/:id?', inicioController.getClasifications);
+router.get('/clasifications/:id?', inicioController.getClasificationsPublic);
 router.get('/variable/:id?', inicioController.getVariables);
 router.get('/research/:id?', inicioController.getResearchs);
 router.get('/reports/:id?', inicioController.getReports);
