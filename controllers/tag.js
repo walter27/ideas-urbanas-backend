@@ -232,8 +232,6 @@ function updateStopWords(req, res) {
                 return responsesH.sendResponseOk(res, value, 'Lista de palabras actualizada correctamente.');
             });
 
-            console.log(data);
-
         })
 
 
