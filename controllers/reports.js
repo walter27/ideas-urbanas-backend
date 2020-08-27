@@ -17,9 +17,6 @@ const messageErrorParams = 'No ha enviado los parámetros'
 
 async function addReports(req, res) {
 
-
-    console.log(req);
-
     var data = { name: null, description: null };
     if (req.fields) {
         data.name = req.fields.name;
@@ -71,7 +68,6 @@ async function addReports(req, res) {
 
 function updateReports(req, res) {
 
-    console.log('ACTUALIZAR', req);
     var data = { name: null, description: null };
     if (req.fields) {
         data.name = req.fields.name;
