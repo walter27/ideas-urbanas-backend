@@ -5,7 +5,7 @@ const addValidation = data => {
     const schema = {
         name: Joi.string().min(3).required(),
         description: Joi.optional(),
-        active: Joi.boolean().required(),
+        active: Joi.boolean(),
 
     };
 

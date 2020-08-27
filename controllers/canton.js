@@ -28,7 +28,6 @@ function getCantons(req, res) {
             ]
         });
     }
-
     if (req.params.id) {
         CantonModel.findById(String(req.params.id), (err, value) => {
             if (err) {

@@ -210,11 +210,57 @@ function getStopwords(req, res) {
     });
 }
 
+function updateStopWords(req, res) {
+
+    let body = req.body;
+    let id = req.params.id
+
+    if (body && ObjectId.isValid(id)) {
+
+        StopwordModel.findById(id, (error, data) => {
+
+            if (error) {
+                return responsesH.sendError(res, 500, 'Lista de palabras no encontrada.');
+            }
+
+            data.stopwords = body;
+            data.save((err, value) => {
+                if (err) {
+                    return responsesH.sendError(res, 500, 'Error actualizando la  lista de palabras.');
+                }
+
+                return responsesH.sendResponseOk(res, value, 'Lista de palabras actualizada correctamente.');
+            });
+
+            console.log(data);
+
+        })
+
+
+
+    } else {
+        return responsesH.sendError(res, 500, messageErrorBody);
+    }
+
+    /*const stopword = new StopwordModel({
+        stopwords: body
+    });
+
+    stopword.save((err, value) => {
+        if (err) {
+            return responsesH.sendError(res, 500, messageError);
+        }
+        return responsesH.sendResponseOk(res, value, 'Palabras prohibidas actulizadas');
+    });*/
+
+
+}
 module.exports = {
     addTag,
     deleteTag,
     updateTag,
     getTagsByCantByType,
     getStopwords,
-    getTags
+    getTags,
+    updateStopWords
 }

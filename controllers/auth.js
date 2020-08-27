@@ -20,12 +20,13 @@ const messageErrorParams = 'No ha enviado los parámetros'
 async function login(req, res) {
     var email = req.body.email;
     var pass = req.body.password;
-
+    console.log(req.body);
     //Validate form with @hapi/joi
     const { error } = loginValidation(req.body);
-    if (error)
-
+    if (error) {
+        //console.log(error);
         return responsesH.sendError(res, 400, messageErrorBody);
+    }
 
     //Checking if the email exists
     const user = await UserModel.findOne({ email: email });

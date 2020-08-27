@@ -15,13 +15,15 @@ function getProvincias(req, res) {
 
     const filters = filtersH.buildFilters(req);
 
-    var extraFilters = { };
+    var extraFilters = {};
 
-    if ( req.body.search != null ) {
+    if (req.body.search != null) {
         extraFilters = { $and: [] };
-        extraFilters.$and.push({ $or: [
-            { 'name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } }
-        ]});
+        extraFilters.$and.push({
+            $or: [
+                { 'name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } }
+            ]
+        });
     }
 
     if (req.params.id) {
@@ -61,7 +63,6 @@ async function addProvincia(req, res) {
             });
             provincia.save((err, value) => {
                 if (err) {
-                    console.log(err);
                     return responsesH.sendError(res, 500, messageError);
                 }
 
@@ -93,7 +94,7 @@ function updateProvincia(req, res) {
             }
 
             //Update provincia
-            if (body.name)  provincia.name = body.name;
+            if (body.name) provincia.name = body.name;
             provincia.active = body.active;
             provincia.description = body.description || '';
 

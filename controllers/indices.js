@@ -106,9 +106,15 @@ async function value_data(indicator_name, variable_code, city_id, years) {
         if (typeof data.value === 'object') {
             data.value = data.value['si'];
         }
-        if (data.value <= indicator.configs[0][0]) value = value + indicator.configs[0][1];
-        else if (data.value <= indicator.configs[1][0]) value = value + indicator.configs[1][1];
-        else value = value + indicator.configs[2][0];
+        if (data.value <= indicator.configs[0][0]) {
+            value = value + indicator.configs[0][1];
+        } else {
+            if (data.value <= indicator.configs[1][0]) {
+                value = value + indicator.configs[1][1];
+            } else {
+                value = value + indicator.configs[2][0];
+            }
+        }
 
     });
 
