@@ -17,10 +17,12 @@ const messageErrorParams = 'No ha enviado los parámetros'
 
 async function addReports(req, res) {
 
-    var data = { name: null, description: null };
+    var data = { name: null, description: null, url: null };
     if (req.fields) {
         data.name = req.fields.name;
         data.description = req.fields.description;
+        data.url = req.fields.url;
+
     }
 
     if (req.fields && req.files) {
@@ -45,6 +47,7 @@ async function addReports(req, res) {
         const reports = new ReportsModel({
             name: req.fields.name,
             description: req.fields.description,
+            url: req.fields.url,
             image_route: route,
             image_contentType: req.files.image.type,
             active: true
@@ -68,10 +71,12 @@ async function addReports(req, res) {
 
 function updateReports(req, res) {
 
-    var data = { name: null, description: null };
+    var data = { name: null, description: null, url: null };
     if (req.fields) {
         data.name = req.fields.name;
         data.description = req.fields.description;
+        data.url = req.fields.url;
+
     }
     const _id = req.params.id;
 
@@ -88,14 +93,17 @@ function updateReports(req, res) {
                 return responsesH.sendError(res, 500, 'Reporte no encontrado.');
             }
 
-            var route_to_delete = reports.image_route;
 
             //Update reports
             if (req.fields.name) reports.name = req.fields.name;
+            if (req.fields.url) reports.url = req.fields.url;
             if (req.fields.description) reports.description = req.fields.description;
 
 
             if (req.files.image) {
+
+                var route_to_delete = reports.image_route;
+
 
                 //Upload File Normal to the Server
                 var id_script = crypto.randomBytes(20).toString('hex');
@@ -111,6 +119,9 @@ function updateReports(req, res) {
                 reports.image_contentType = req.files.image.type;
             }
 
+
+            console.log(reports);
+
             reports.save((err, value) => {
                 if (err) {
                     return responsesH.sendError(res, 500, 'Error actualizando el reporte.');
@@ -121,11 +132,18 @@ function updateReports(req, res) {
 
 
             try {
-                fs.unlinkSync(tmp_path);
-                //fs.unlinkSync(tmp_path_active);
-                fs.unlinkSync(route_to_delete);
-                //fs.unlinkSync(route_to_delete_active);
+
+                if (fs.existsSync(tmp_path)) {
+                    fs.unlinkSync(tmp_path);
+
+                }
+                if (fs.existsSync(route_to_delete)) {
+                    fs.unlinkSync(route_to_delete);
+
+                }
             } catch (err) {
+
+                console.log(err);
 
             }
 

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const DataModel = require('../data');
 const ResearchModel = require('../research');
+const TagModel = require('../tag')
 
 var cantonSchema = new mongoose.Schema({
 
@@ -10,7 +11,7 @@ var cantonSchema = new mongoose.Schema({
     code: { type: String, required: true },
     url: { type: String, },
     obj_Provincia: { type: Object, required: true },
-    active: Boolean,
+    is_intermediate: Boolean,
     covid: Boolean,
     indexes: Boolean,
     extraData: Object,
@@ -30,6 +31,16 @@ cantonSchema.post('save', function(canton, next) {
 
     //Actualizar Data
     DataModel.updateMany({ 'obj_Canton._id': canton._id }, { 'obj_Canton': canton }, { "multi": true },
+        function(err, result) {
+            if (err) {
+                return next(err);
+            }
+            next();
+        });
+
+
+    //Actualizar nube
+    TagModel.updateMany({ 'obj_Canton._id': canton._id }, { 'obj_Canton': canton }, { "multi": true },
         function(err, result) {
             if (err) {
                 return next(err);

@@ -13,79 +13,58 @@ function getChartsTypes(req, res) {
     })
 }
 
-function saveCharts(req, res) {
+async function saveCharts(req, res) {
 
-    let pathImage = path.resolve(__dirname, `../${req.body.options.chart.type }/image.png`)
-    chartExporter.export(req.body, (error, res) => {
-        let imageb64 = res.data;
+    let imageb64;
+    let image = `${new Date().getMilliseconds()}_${req.body.variable }.png`;
+    let pathImage = path.resolve(__dirname, `../share/${image}`)
+    chartExporter.export(req.body.options, async(error, res) => {
+
+
+        //console.log('save image', req.body.options.chart.type);
+
+        if (res) {
+            //console.log(req.body);
+            imageb64 = await res.data;
+
+        } else {
+            console.log(error);
+        }
+
+
         fs.writeFileSync(pathImage, imageb64, "base64", function(err) {
-            if (error) console.log(err);
+            if (err) console.log('ERROR', err);
         });
         chartExporter.killPool();
 
     })
 
-    res.json({
+
+
+    await res.json({
         ok: true,
-        img: 'Saved image!',
-        route: pathImage
-    })
+        name: image
+    });
+
+
 
 }
 
-function shareChart(req, res) {
 
-
-    let share = `${req.body.name}_${new Date().getMilliseconds()}`;
-    let pathImage = path.resolve(__dirname, `../${req.body.type}/image.png`)
-    let pathImageShare = path.resolve(__dirname, `../share/${share}.png`);
-    fs.copyFileSync(pathImage, pathImageShare);
-
-    res.json({
-        ok: true,
-        img: share
-    })
-
-}
 
 
 function getImageShare(req, res) {
 
-    let route = path.resolve(__dirname, `../share/${req.params.image}.png`)
+    let route = path.resolve(__dirname, `../share/${req.params.image}`)
     return res.sendFile(route);
 
 }
 
-function saveImage24(req, res) {
 
-    let pathImage = path.resolve(__dirname, `../${req.body.type}/`)
-
-    //console.log(req.body);
-    base64Img.img(req.body.data, pathImage, "image", (err) => {
-        if (err) console.log(err);
-        res.json({
-            ok: true,
-            img: 'Saved image!'
-        })
-
-    }); // Asynchronous using
-
-
-    /*let buff = new Buffer(req.body.data, 'base64');
-    fs.writeFileSync(pathImage, buff, "base64", function(err) {
-        if (err) console.log(err);
-        res.json({
-            ok: true,
-            img: 'Saved image!'
-        })
-    });*/
-}
 
 module.exports = {
     getChartsTypes,
     saveCharts,
-    shareChart,
     getImageShare,
-    saveImage24
 
 }

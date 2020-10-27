@@ -32,10 +32,10 @@ const inicio = require('./routes/inicio');
 const charts = require('./routes/charts');
 const category = require('./routes/category');
 const reports = require('./routes/reports');
-const csvFile = require('./routes/fileCSV');
+const file = require('./routes/file');
 
 const mongoose = require('mongoose');
-mongoose.connect(process.env.URLDB, { useNewUrlParser: true })
+mongoose.connect('mongodb://localhost:27017/idesdb', { useNewUrlParser: true })
     .then(() => {
         console.log('Conexion a la base de datos realizada');
         app.listen(process.env.PORT, () => console.log(`The server is running ${process.env.PORT}!`))
@@ -59,18 +59,18 @@ app.use(cors());
 app.use(compression());
 
 // Routes
-app.use('/user', verifyAdmin, user);
-app.use('/config', verifyAdmin, config);
-app.use('/server', verifyAdmin, server);
-app.use('/provincia', verifyAdmin, provincia);
+app.use('/user', user);
+app.use('/config', config);
+app.use('/server', server);
+app.use('/provincia', provincia);
 app.use('/canton', canton);
-app.use('/research', verifyAdmin, research);
-app.use('/clasification', verifyAdmin, clasification);
-app.use('/origin', verifyAdmin, origin);
-app.use('/variable', verifyAdmin, variable);
+app.use('/research', research);
+app.use('/clasification', clasification);
+app.use('/origin', origin);
+app.use('/variable', variable);
 app.use('/data', data);
-app.use('/tag', verifyAdmin, tag);
-app.use('/indicator', verifyAdmin, indicator);
+app.use('/tag', tag);
+app.use('/indicator', indicator);
 
 
 // Routes Public
@@ -91,4 +91,4 @@ app.use('/loadJSON', inicio);
 app.use('/getTagsByCantByType', inicio);
 app.use('/getStopwords', inicio);
 app.use('/api', inicio);
-app.use('/getCSV', csvFile);
+app.use('/file', file);

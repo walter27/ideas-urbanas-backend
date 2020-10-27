@@ -5,8 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "node app.js",
-        "dev": "nodemon app.js",
-        "preinstall": "export ACCEPT_HIGHCHARTS_LICENSE=1"
+        "dev": "nodemon app.js"
     },
     "author": "Leandro",
     "license": "ISC",
@@ -42,6 +41,7 @@
         "node-zip": "^1.1.1",
         "nodemailer": "^6.3.0",
         "paginate": "^0.2.0",
+        "round-to": "^4.1.0",
         "zip-stream": "^2.1.2"
     },
     "devDependencies": {

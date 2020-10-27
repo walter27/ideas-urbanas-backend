@@ -1,5 +1,6 @@
 const IndicatorModel = require('../models/indicator');
-const ClasificationModel = require('../models/clasification');
+const VariableModel = require('../models/variable');
+const CantonModel = require('../models/canton');
 var mongoose = require('mongoose');
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -14,6 +15,8 @@ const messageErrorParams = 'No ha enviado los parámetros'
 
 function addIndicator(req, res) {
     const body = req.body;
+
+
     if (body) {
 
         //validate form with @hapi/joi
@@ -22,31 +25,33 @@ function addIndicator(req, res) {
             return responsesH.sendError(res, 400, messageErrorBody);
         }
 
-        if (ObjectId.isValid(body.id_Clasification)) {
+        if (ObjectId.isValid(body.id_Variable) && ObjectId.isValid(body.id_Canton)) {
 
-            ClasificationModel.findById({ _id: ObjectId(body.id_Clasification) }, async (err, clasification) => {
-                if (err) 
-                    return responsesH.sendError(res, 400, 'Temáticas no encontrada.'); 
+            VariableModel.findById({ _id: ObjectId(body.id_Variable) }, async(err, variable) => {
+                if (err)
+                    return responsesH.sendError(res, 400, 'Variable no encontrada.');
 
-                let len = body.configs.length;
-                for (var i=1; i < len-1; i++)
-                    if (body.configs[i][0] <= body.configs[i-1][0]) 
-                        return responsesH.sendError(res, 400, 'Error en los datos.');  
-                    
-                const indicator = new IndicatorModel({
-                        name: body.name,
-                        description: body.description,
-                        obj_Clasification: clasification,
-                        configs: body.configs
-                });
+                CantonModel.findById({ _id: ObjectId(body.id_Canton) }, async(err, canton) => {
+                    if (err)
+                        return responsesH.sendError(res, 400, 'Canton no encontrado.');
 
-                indicator.save((err, value) => {
+
+                    const indicator = new IndicatorModel({
+                        obj_Variable: variable,
+                        obj_Canton: canton,
+                        ridit: body.ridit,
+                        year: body.year
+                    });
+
+                    indicator.save((err, value) => {
                         if (err) {
                             return responsesH.sendError(res, 500, messageError);
                         }
-        
+
                         return responsesH.sendResponseOk(res, value, 'Indicador insertado correctamente.');
-                });    
+                    });
+                })
+
             });
         } else {
             return responsesH.sendError(res, 500, messageErrorBody);
@@ -69,28 +74,32 @@ async function updateIndicator(req, res) {
             return responsesH.sendError(res, 400, messageErrorBody);
 
         //Search indicator to update and update
-        IndicatorModel.findById(_id, async (err, indicator) => {
+        IndicatorModel.findById(_id, async(err, indicator) => {
             if (err) {
                 return responsesH.sendError(res, 500, 'Indicador no encontrado.');
             }
 
-            let len = body.configs.length;
-            for (var i=1; i < len-1; i++)
-                if (body.configs[i][0] <= body.configs[i-1][0]) 
-                    return responsesH.sendError(res, 400, 'Error en los datos.');  
 
             //Update indicator
-            if (body.name) indicator.name = body.name;
-            if (body.description) indicator.description = body.description;
-            if (body.configs) indicator.configs = body.configs;
+            if (body.ridit) indicator.ridit = body.ridit;
+            if (body.year) indicator.year = body.year;
 
-            if ( ObjectId.isValid( body.id_Clasification ) ) {
-                const clasification = await ClasificationModel.findOne({_id: body.id_Clasification});
-                if (clasification == null)
-                    return responsesH.sendError(res, 400, 'Temáticas no encontrada.');
-                indicator.obj_Clasification = clasification ;
+            if (ObjectId.isValid(body.id_Variable)) {
+                const variable = await VariableModel.findOne({ _id: body.id_Variable });
+                if (variable == null)
+                    return responsesH.sendError(res, 400, 'Variable no encontrada.');
+                indicator.obj_Variable = variable;
             } else {
-                return responsesH.sendError(res, 400, 'Temáticas incorrecta.');
+                return responsesH.sendError(res, 400, 'Variable incorrecta.');
+            }
+
+            if (ObjectId.isValid(body.id_Canton)) {
+                const canton = await CantonModel.findOne({ _id: body.id_Canton });
+                if (canton == null)
+                    return responsesH.sendError(res, 400, 'Canton no encontrado.');
+                indicator.obj_Canton = canton;
+            } else {
+                return responsesH.sendError(res, 400, 'Canton incorrecto.');
             }
 
             indicator.save((err, value) => {

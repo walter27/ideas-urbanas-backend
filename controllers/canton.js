@@ -66,8 +66,8 @@ function addCanton(req, res) {
                     description: body.description || '',
                     code: body.code || '',
                     obj_Provincia: provincia,
-                    active: body.active,
-                    covid: false,
+                    is_intermediate: body.is_intermediate,
+                    covid: true,
                     indexes: false,
                     url: body.url,
                     color: body.color || ''
@@ -111,8 +111,8 @@ async function updateCanton(req, res) {
             if (body.name) canton.name = body.name;
             if (body.description) canton.description = body.description;
             if (body.code) canton.code = body.code;
-            canton.active = body.active;
-            canton.covid = body.covid;
+            canton.is_intermediate = body.is_intermediate;
+            canton.covid = true;
             canton.indexes = body.indexes;
             if (body.url) canton.url = body.url;
             if (body.color) canton.color = body.color;

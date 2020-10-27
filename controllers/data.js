@@ -55,7 +55,6 @@ function getDatas(req, res) {
 
 function addData(req, res) {
     const body = req.body;
-
     if (body) {
         //validate form with @hapi/joi
         const { error } = addValidation(body);

@@ -30,6 +30,7 @@ router.post('/addTag', inicioController.addTag);
 router.post('/getStopwords', inicioController.getStopwords);
 
 router.post('/loadJSON', formidable(), inicioController.loadJSON);
+router.post('/loadIndicatorsJSON', formidable(), inicioController.loadIndicatorsJSON);
 router.get('/yearsAvailableForVariable/:id', inicioController.getYearsAvailableForVariable);
 
 

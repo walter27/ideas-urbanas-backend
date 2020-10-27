@@ -40,7 +40,7 @@ async function addClasification(req, res) {
 
         readStream.pipe(writeStream);
 
-        /*Upload File Active to the Server
+        //Upload File Active to the Server
         id_script = crypto.randomBytes(20).toString('hex');
         var route_active = './images/' + id_script + '__' + req.files.image_active.name;
         var tmp_path_active = req.files.image_active.path;
@@ -48,7 +48,7 @@ async function addClasification(req, res) {
         var readStream = fs.createReadStream(tmp_path_active);
         var writeStream = fs.createWriteStream(route_active);
 
-        readStream.pipe(writeStream);*/
+        readStream.pipe(writeStream);
 
         const clasification = new ClasificationModel({
             name: req.fields.name,
@@ -56,8 +56,8 @@ async function addClasification(req, res) {
             active: req.fields.active,
             image_route: route,
             image_contentType: req.files.image.type,
-            //image_active_route: route_active,
-            //image_active_contentType: req.files.image_active.type
+            image_active_route: route_active,
+            image_active_contentType: req.files.image_active.type
         });
 
         clasification.save((err, value) => {
@@ -76,7 +76,7 @@ async function addClasification(req, res) {
 
         try {
             fs.unlinkSync(tmp_path);
-            //fs.unlinkSync(tmp_path_active);
+            fs.unlinkSync(tmp_path_active);
         } catch (err) {
 
         }
@@ -109,8 +109,6 @@ function updateClasification(req, res) {
                 return responsesH.sendError(res, 500, 'Clasificacion no encontrada.');
             }
 
-            var route_to_delete = clasification.image_route;
-            //var route_to_delete_active = clasification.image_active_route;
 
             //Update Clasification
             if (req.fields.name) clasification.name = req.fields.name;
@@ -119,6 +117,9 @@ function updateClasification(req, res) {
 
 
             if (req.files.image) {
+
+                var route_to_delete = clasification.image_route;
+
 
                 //Upload File Normal to the Server
                 var id_script = crypto.randomBytes(20).toString('hex');
@@ -134,7 +135,9 @@ function updateClasification(req, res) {
                 clasification.image_contentType = req.files.image.type;
             }
 
-            /*if (req.files.image_active) {
+            if (req.files.image_active) {
+                var route_to_delete_active = clasification.image_active_route;
+
                 //Upload File Active to the Server
                 var id_script = crypto.randomBytes(20).toString('hex');
                 var route_active = './images/' + id_script + '__' + req.files.image_active.name;
@@ -147,7 +150,7 @@ function updateClasification(req, res) {
 
                 clasification.image_active_route = route_active;
                 clasification.image_active_contentType = req.files.image_active.type;
-            }*/
+            }
 
             clasification.save((err, value) => {
                 if (err) {
@@ -159,12 +162,29 @@ function updateClasification(req, res) {
 
 
             try {
-                fs.unlinkSync(tmp_path);
-                //fs.unlinkSync(tmp_path_active);
-                fs.unlinkSync(route_to_delete);
-                //fs.unlinkSync(route_to_delete_active);
-            } catch (err) {
 
+                if (fs.existsSync(tmp_path)) {
+                    fs.unlinkSync(tmp_path);
+
+                }
+
+                if (fs.existsSync(tmp_path_active)) {
+                    fs.unlinkSync(tmp_path_active);
+
+                }
+                if (fs.existsSync(route_to_delete)) {
+                    fs.unlinkSync(route_to_delete);
+                }
+
+                if (fs.existsSync(route_to_delete_active)) {
+                    fs.unlinkSync(route_to_delete_active);
+
+                }
+
+
+
+            } catch (err) {
+                console.log(err);
             }
 
         });
@@ -190,8 +210,10 @@ async function deleteClasification(req, res) {
 
         try {
             fs.unlinkSync(clasification.image_route);
-            //fs.unlinkSync(clasification.image_active_route);
+            fs.unlinkSync(clasification.image_active_route);
         } catch (err) {
+
+            console.log(err);
 
         }
     } else {

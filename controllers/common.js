@@ -35,7 +35,7 @@ function getDatas(req, res) {
 
     filters.sort = filters.sort + ' and year';
 
-    var extra_filters = { 'obj_Canton.active': true };
+    var extra_filters = { 'obj_Canton.is_intermediate': true };
     if (req.body.id_Variable) {
         extra_filters['obj_Variable._id'] = ObjectId(req.body.id_Variable);
     }
@@ -71,6 +71,20 @@ function getDatasCovid(req, res) {
     var extra_filters = { 'obj_Canton.covid': true };
     if (req.body.idVariable) {
         extra_filters['obj_Variable._id'] = ObjectId(req.body.idVariable);
+    }
+
+    if (req.body.cities) {
+        var cities = [];
+        for (var i = 0; i < req.body.cities.length; i++) {
+            cities.push(ObjectId(req.body.cities[i]));
+        }
+
+        extra_filters = {
+            $and: [
+                extra_filters,
+                { 'obj_Canton._id': { $in: cities } }
+            ]
+        };
     }
 
     return DataModel.paginate(extra_filters, filters);
