@@ -380,12 +380,14 @@ async function deleteVariable(req, res) {
 
 function getVariableByClasification(id_Clasification, req, res) {
 
+    const sort = { name: 1 };
+
     VariableModel.find({ 'obj_Clasification._id': ObjectId(id_Clasification), active: true }, (err, value) => {
         if (err) {
             return responsesH.sendError(res, 500, messageError);
         }
         return responsesH.sendResponseOk(res, value);
-    });
+    }).sort(sort);
 }
 
 module.exports = {

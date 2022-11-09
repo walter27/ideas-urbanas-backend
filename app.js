@@ -25,6 +25,7 @@ const origin = require('./routes/origin');
 const variable = require('./routes/variable');
 const data = require('./routes/data');
 const tag = require('./routes/tag');
+const word = require('./routes/word');
 const indicator = require('./routes/indicator');
 
 //Public
@@ -70,6 +71,7 @@ app.use('/origin', origin);
 app.use('/variable', variable);
 app.use('/data', data);
 app.use('/tag', tag);
+app.use('/word', word);
 app.use('/indicator', indicator);
 
 

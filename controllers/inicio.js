@@ -469,7 +469,6 @@ async function loadJSON(req, res) {
                 console.log(act_variable, variable.name, `INDICE${i}`);
 
             } else {
-                console.log();
                 act_variable.code = variable._id;
                 act_variable.abbreviation = variable.abbreviation;
                 act_variable.periodicity = variable.periodicity;
@@ -590,13 +589,14 @@ async function loadIndicatorsJSON(req, res) {
 async function getIndexes(req, res) {
 
     var indexes = {};
+    const sort = { name: 1 };
 
     const clasifications = await ClasificationModel.find({ indexes: true });
     var cities = null;
     //if (req.body.cities) {
     //  cities = await CantonModel.find({ _id: { $in: req.body.cities } });
     // } else {
-    cities = await CantonModel.find({ indexes: true });
+    cities = await CantonModel.find({ indexes: true }).sort(sort);
     // }
     var id_cities = [];
     cities.forEach(async city => {

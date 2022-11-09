@@ -1,8 +1,7 @@
 const TagModel = require('../models/tag');
+const WordModel = require('../models/word');
 const CantonModel = require('../models/canton');
 const StopwordModel = require('../models/stopwords');
-const Analyzer = require('natural').SentimentAnalyzer;
-const stemmer = require('natural').PorterStemmerEs
 var mongoose = require('mongoose');
 var ObjectId = require('mongoose').Types.ObjectId;
 
@@ -16,35 +15,14 @@ const messageErrorBody = 'No ha enviado algún dato'
 const messageErrorParams = 'No ha enviado los parámetros'
 
 async function addTag(req, res) {
-    let data = { text: null, id_Canton: null, type: null };
+    let data = { id_Canton: null, id_Word: null };
     if (req.body) {
-        data.text = req.body.text;
         data.id_Canton = req.body.id_Canton;
-        //data.type = req.body.type;
-
-        const analyzer = new Analyzer('Spanish', stemmer, 'senticon');
-        let value = analyzer.getSentiment([data.text]);
-        if (value > 0) {
-            data.type = 'positive'
-
-        }
-
-        if (value === 0) {
-            data.type = 'neutro'
-
-        }
-
-        if (value < 0) {
-
-            data.type = 'negative'
-
-
-        }
+        data.id_Word = req.body.id_Word;
 
     }
 
-
-    if (req.body && ObjectId.isValid(data.id_Canton)) {
+    if (req.body && ObjectId.isValid(data.id_Canton) && ObjectId.isValid(data.id_Word)) {
 
         //validate form with @hapi/joi
         const { error } = addValidation(data);
@@ -55,18 +33,23 @@ async function addTag(req, res) {
             if (err)
                 return responsesH.sendError(res, 400, 'Canton no encontrado.');
 
-            const tag = new TagModel({
-                text: data.text,
-                obj_Canton: canton,
-                type: data.type
-            });
+            WordModel.findById({ _id: ObjectId(data.id_Word) }, (err, word) => {
+                if (err)
+                    return responsesH.sendError(res, 400, 'Palabra no encontrado.');
 
-            tag.save((err, value) => {
-                if (err) {
-                    return responsesH.sendError(res, 500, messageError);
-                }
-                return responsesH.sendResponseOk(res, value, 'Tag insertada correctamente.');
-            });
+                const tag = new TagModel({
+                    obj_Canton: canton,
+                    obj_Word: word
+                });
+
+                tag.save((err, value) => {
+                    if (err) {
+                        return responsesH.sendError(res, 500, messageError);
+                    }
+                    return responsesH.sendResponseOk(res, value, 'Tag insertada correctamente.');
+                });
+
+            })
         });
     } else {
         return responsesH.sendError(res, 500, messageErrorBody);
@@ -74,94 +57,6 @@ async function addTag(req, res) {
 }
 
 
-async function updateTag(req, res) {
-    const body = req.body;
-    const _id = req.params.id;
-
-    if (body && ObjectId.isValid(_id)) {
-        //validate form with @hapi/joi
-        const { error } = updateValidation(req.body);
-        if (error)
-        //console.log(error);
-
-            return responsesH.sendError(res, 400, messageErrorBody);
-        //Search canton to update and update
-        TagModel.findById(_id, async(err, tag) => {
-            //console.log("canton: ", canton)
-            if (err) {
-                return responsesH.sendError(res, 500, 'Palabra no encontrado.');
-            }
-            //Update tag
-
-            if (body.text) tag.text = body.text;
-            if (body.type) tag.type = body.type;
-
-            if (ObjectId.isValid(body.id_Canton)) {
-                const canton = await CantonModel.findOne({ _id: body.id_Canton });
-                if (canton == null)
-                    return responsesH.sendError(res, 400, 'Canton no encontrada.');
-                tag.obj_Canton = canton;
-            } else {
-                return responsesH.sendError(res, 400, 'Canton incorrecto.');
-            }
-
-            tag.save((err, value) => {
-                if (err) {
-                    return responsesH.sendError(res, 500, 'Error actualizando la palabra.');
-                }
-
-                return responsesH.sendResponseOk(res, value, 'Palabra actualizado correctamente.');
-            });
-
-        });
-    } else {
-        return responsesH.sendError(res, 500, messageErrorBody);
-    }
-}
-
-async function deleteTag(req, res) {
-    _id = req.params.id
-    if (ObjectId.isValid(_id)) {
-
-        const tag = await TagModel.findOne({ _id: _id });
-        if (tag == null)
-            return responsesH.sendError(res, 500, 'Research no encontrada.');
-
-        TagModel.deleteOne({ _id: _id }, (err, value) => {
-            if (err) {
-                return responsesH.sendError(res, 500, 'Error eliminando la Research.');
-            }
-
-            return responsesH.sendResponseOk(res, value, 'Tag eliminada correctamente.');
-        });
-    } else {
-        return responsesH.sendError(res, 500, messageErrorBody);
-    }
-}
-
-function getTags(req, res) {
-    const filters = filtersH.buildFilters(req);
-
-    var extraFilters = {};
-
-    if (req.body.search != null) {
-        extraFilters = { $and: [] };
-        extraFilters.$and.push({
-            $or: [
-                { 'text': { $regex: '.*' + req.body.search + '.*' } },
-                { 'type': { $regex: '.*' + req.body.search + '.*' } },
-                { 'obj_Canton.name': { $regex: '.*' + req.body.search + '.*', $options: 'i' } }
-            ]
-        });
-    }
-
-    TagModel.paginate(extraFilters, filters, (err, value) => {
-        if (err) {
-            return responsesH.sendError(res, 500, messageError);
-        }
-        return responsesH.sendResponseOk(res, value);
-    });
-}
 
 
 function getTagsByCantByType(req, res) {
@@ -180,11 +75,11 @@ function getTagsByCantByType(req, res) {
             },
             {
                 $group: {
-                    _id: '$text',
+                    _id: '$obj_Word.text',
                     //count: { $sum: 1 },
-                    positive: { $sum: { $cond: [{ $eq: ['$type', 'positive'] }, 1, 0] } },
-                    negative: { $sum: { $cond: [{ $eq: ['$type', 'negative'] }, 1, 0] } },
-                    neutro: { $sum: { $cond: [{ $eq: ['$type', 'neutro'] }, 1, 0] } }
+                    positive: { $sum: { $cond: [{ $eq: ['$obj_Word.type', 'positive'] }, 1, 0] } },
+                    negative: { $sum: { $cond: [{ $eq: ['$obj_Word.type', 'negative'] }, 1, 0] } },
+                    neutro: { $sum: { $cond: [{ $eq: ['$obj_Word.type', 'neutro'] }, 1, 0] } }
                 }
             }
 
@@ -255,10 +150,7 @@ function updateStopWords(req, res) {
 }
 module.exports = {
     addTag,
-    deleteTag,
-    updateTag,
     getTagsByCantByType,
     getStopwords,
-    getTags,
     updateStopWords
 }

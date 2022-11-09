@@ -63,11 +63,10 @@ async function addUser(req, res) {
                 name: body.name || '',
                 last_name: body.last_name || '',
                 email: body.email,
-
                 password: body.password,
                 password_changed: true
             });
-            user.save(async (err, value) => {
+            user.save(async(err, value) => {
                 if (err) {
                     return responsesH.sendError(res, 500, messageError);
                 }
@@ -103,16 +102,17 @@ function updateUser(req, res) {
 
         //validate form with @hapi/joi
         const { error } = updateValidation(req.body);
-        if (error)
+        if (error) {
             return responsesH.sendError(res, 400, messageErrorBody);
-
+        }
         //Search user to update and update
-        UserModel.findById(_id, async (err, user) => {
+        UserModel.findById(_id, async(err, user) => {
             if (err) {
+
                 return responsesH.sendError(res, 500, 'Usuario no encontrado.');
             }
 
-            var user_log = await user_logued(req, res);
+            //var user_log = await user_logued(req, res);
 
             // if (user_log.email != user.email)
             //     return responsesH.sendError(res, 500, 'Usuario sin permiso para actualizar la información.');
@@ -128,6 +128,7 @@ function updateUser(req, res) {
 
             user.save((err, value) => {
                 if (err) {
+
                     return responsesH.sendError(res, 500, 'Error actualizando usuario.');
                 }
 
@@ -162,7 +163,7 @@ function updatePassword(req, res) {
     const body = req.body;
     if (body) {
         const _id = req.params.id;
-        if (body.password){
+        if (body.password) {
             body.password_new = body.password;
             body.password_confirmation = true;
         }
@@ -172,7 +173,7 @@ function updatePassword(req, res) {
         if (error)
             return responsesH.sendError(res, 400, messageErrorBody);
 
-        UserModel.findById(_id, async (err, user) => {
+        UserModel.findById(_id, async(err, user) => {
             if (err) {
                 return responsesH.sendError(res, 500, 'Usuario no encontrado.');
             }
